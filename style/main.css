@@ -1,0 +1,72 @@
+#map{
+height:490px;
+}
+.header{
+text-align:center;
+}
+.listClicked{
+cursor:pointer;
+}
+.listClicked:hover{
+background-color : #428bca;
+}
+@media (max-width: 33.9em){
+#map{
+    height:380px;
+    margin-left:auto;
+    margin-right:auto;
+}
+}
+.spacer
+{
+
+}
+.quote{
+text-align:center;
+}
+.searchbtn{
+margin-left:auto;
+margin-right:auto;
+}
+
+.card-block:hover{
+
+}
+
+
+.spacer{
+margin-left:auto;
+margin-right:auto;
+margin-top:6px;
+}
+.btn{
+    text-align:center;
+}
+.busInput{
+margin-left:auto;
+margin-right:auto;
+padding-left:auto;
+padding-right:auto;
+}
+#collapser{
+margin-left:auto;
+margin-right:auto;
+}
+datalist{
+overflow:scroll;
+}
+#busStopSearch{
+overflow:scroll;
+}
+option{
+overflow:scroll;
+}
+#busStopSearchForm{
+margin-left:auto;
+margin-right:auto;
+padding-left:auto;
+padding-right:auto;
+}
+.originDestinationChosen{
+    
+}
