@@ -6,9 +6,7 @@ var busRouteIds=[];
 var positionsId = [];
 
 document.getElementById("findMe").addEventListener("click", findLocation, true);
-
 window.onload = withoutPosition();
-
 function findLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition);
@@ -16,7 +14,6 @@ function findLocation() {
         withoutPosition();
     }
 }
-
 function showPosition(position) {
     window.location.href = "index.php?latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude;
     /*
@@ -28,8 +25,6 @@ function showPosition(position) {
     document.cookie = "local_latitude=" + position.coords.latitude;
     document.cookie = "local_longitude=" + position.coords.longitude;
 }
-
-
 
 var iconForPin = L.icon({
     iconUrl: "assets/img/622.png",
@@ -102,8 +97,9 @@ for( var i  = 0 ;i<bus_stop_data.length;i++){
    options.setAttribute("data-bus_stop",bus_stop_data[i].busstop_id);
    document.getElementById("busStopNamesSearch").appendChild(options);
 }
-}
 
+console.log(busroutetobusstop);
+}
 function popUpClickEvent(){
   var positionsName = [];
   for (var i = 0; i < document.getElementsByClassName("popUpIsClicked").length; i++) {
@@ -119,7 +115,7 @@ function popUpClickEvent(){
             }
         if (positionsId.length == 2 ) {
                 
-                   sendAjax(positionsId);        
+                   findBusRoute(positionsId);        
         }
         else if ( positionsId.length > 2 ){
         positionsId.shift()
@@ -128,10 +124,31 @@ function popUpClickEvent(){
         }, false);
     }
 }
+function findBusRoute(positionsId)
+{
+	this.positionsId = positionsId;
+	this.busToFromStop;
+	var busStopBelongsToOrigin = new Array;
+	for(var i=0;i<busroutetobusstop.length;i++)
+	{
+		if(positionsId[0] == busroutetobusstop[i].busstop_id)
+		{
+			for(var j=0;j<busroutetobusstop.length;j++)
+			{
+				if(positionsId[1]==busroutetobusstop[j].busstop_id)
+				{
+					busStopBelongsToOrigin.push(busroutetobusstop[j]);
+				}
+			}
 
+		}
+	}
+	console.log(busStopBelongsToOrigin);
+}
 
 function sendAjax(positionsId){
  var busstopXmlHttp = new XMLHttpRequest();
+ 
  var url = "bus_route_and_stop_json.php";
  var params = "busStopOrigin=" + positionsId[0] + "&busStopDestination=" + positionsId[1];
   busstopXmlHttp.open("POST", url, true);

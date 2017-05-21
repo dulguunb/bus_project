@@ -3,7 +3,7 @@
 <title>BUS PROJECT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <!-- LEAFLET API ENDS HERE -->
-
+<meta charset="UTF-8">
 <!--markerCluster style-->
 
     <link rel="stylesheet" href="assets/style/leaflet.css" />
@@ -51,7 +51,7 @@
 
 
 <div class="col-md-12 col-xs-12 col-lg-3">
-<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="getPositions">
+<form>
     
 
     <div class="busInput btn-group" role="group">
@@ -94,6 +94,7 @@
 <link rel="stylesheet" href="style/main.css"> 
 <!-- MAIN MAP JAVASCRIPT -->
 <script src="script/bus_stop.js"></script>
+<script type="text/javascript" src="script/busroutestopdata.js"></script>
 
 <script src="script/map.js"></script>
 <script src="script/domSearch.js"></script>
