@@ -1,5 +1,7 @@
+
 function mybusstop()
 {
+
 	this.origin;
 	this.destination;
 	this.setOrigin = function(neworigin)
@@ -10,46 +12,54 @@ function mybusstop()
 	{
 		this.destination = newDestination;
 	};
+	this.findRoute = function()
+	{
+		for(var i=0;i<busroutetobusstop.length;i++)
+		{
+			if(busroutetobusstop[i].busstop_id == this.origin)
+			{
+				for(var j=0;j<busroutetobusstop.length;j++)
+				{
+					if(busroutetobusstop[j].busstop_id == this.destination)
+						console.log(busroutetobusstop[j].busroute_id);
+				}
+			}
+		}
+	}
 }
 function inputs()
 {
-	
-}
+	var input = new inputStack();
+	input.push_back(2);
+	input.push_back(3);
+	var busstop = input.createBusStop();
+	busstop.findRoute();
 
+}
+window.onload = inputs();
 function inputStack()
 {
 	this.inputter=[];
 	this.push_back = function(newInput)
 	{
-		if(inputter.length<2){
-		inputter.push(newInput);
+		if(this.inputter.length<2){
+		this.inputter.push(newInput);
 		}
-		if(inputter.length == 2)
-		{
-			if(finishFirst())
-			{
-				finishInput();
-			}
-			else
-			{
-				startOver();
-			}
-		}
-		if(inputter.length > 3)
+		if(this.inputter.length > 3)
 		{
 			startOver();
 		}
 	};
-	this.finishInput = function()
+	this.createBusStop = function()
 	{
 		var myNewBusstop = new mybusstop();
-		myNewBusstop.setOrigin(inputter[0]);
-		myNewBusstop.setDestination(inputter[1]);
-		return myNewBusStop;
+		myNewBusstop.setOrigin(this.inputter[0]);
+		myNewBusstop.setDestination(this.inputter[1]);
+		return myNewBusstop;
 	};
 	this.startOver = function()
 	{
-		inputter.shift();
+		this.inputter.shift();
 	};
 	this.stateChange=function()
 	{
@@ -59,4 +69,5 @@ function inputStack()
 	{
 		return answer;
 	}
+
 }
