@@ -1,4 +1,9 @@
 
+function busInfo()
+{
+	this.busstop = [];
+	this.busroute = [];
+}
 function mybusstop()
 {
 
@@ -14,24 +19,52 @@ function mybusstop()
 	};
 	this.findRoute = function()
 	{
+		var myBusInfoOrigin = new busInfo();
+		var myBusInfoDestination = new busInfo();
 		for(var i=0;i<busroutetobusstop.length;i++)
 		{
 			if(busroutetobusstop[i].busstop_id == this.origin)
 			{
-				for(var j=0;j<busroutetobusstop.length;j++)
+				myBusInfoOrigin.busroute.push(busroutetobusstop[i].busroute_id);
+			}
+		}
+		var result = [];
+		for(var i=0;i<busroutetobusstop.length;i++)
+		{
+			if(busroutetobusstop[i].busstop_id==this.destination)
+			{
+				myBusInfoDestination.busroute.push(busroutetobusstop[i].busroute_id);
+			}	
+		}
+		for(var i=0;i<myBusInfoOrigin.busroute.length;i++)
+		{
+			for(var j=0;j<myBusInfoDestination.busroute.length;j++)
+			{
+				if(myBusInfoOrigin.busroute[i] == myBusInfoDestination.busroute[j])
 				{
-					if(busroutetobusstop[j].busstop_id == this.destination)
-						console.log(busroutetobusstop[j].busroute_id);
+					result.push(myBusInfoDestination.busroute[i]);
 				}
 			}
 		}
+		
+		return result;
+
 	}
 }
 function inputs()
 {
 	var input = new inputStack();
-	input.push_back(2);
-	input.push_back(3);
+	input.push_back(279);
+	input.push_back(281);
+	/*
+	11100010
+	11100020
+	11100030
+	11100370
+	11100010
+	11200010
+	11200020
+	*/
 	var busstop = input.createBusStop();
 	busstop.findRoute();
 
