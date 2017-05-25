@@ -11,6 +11,8 @@ function mybusstop()
 {
 	this.origin;
 	this.destination;
+	this.originInfo=[];
+	this.destinationInfo = [];
 	this.setOrigin = function(neworigin)
 	{
 		this.origin = neworigin;
@@ -27,10 +29,9 @@ function mybusstop()
 		{
 			if(this.origin == busroutetobusstop[i].busstop_id)
 			{
-				busrouteObject.push(busroutetobusstop[i]);
+				this.originInfo.push(busroutetobusstop[i]);
 			}
 		}
-		return busrouteObject;
 	}
 
 	this.findDestination = function()
@@ -40,50 +41,28 @@ function mybusstop()
 		{
 			if(this.destination == busroutetobusstop[i].busstop_id)
 			{
-				busrouteObject.push(busroutetobusstop[i]);
+				this.destinationInfo.push(busroutetobusstop[i]);
 			}
 		}
-		return busrouteObject;
 	}
 
 	this.findRoute = function()
 	{
-		var myBusInfoOrigin = new busInfo();
-		var myBusInfoDestination = new busInfo();
-
-		
-		for(var i=0;this.findOrigin().length;i++)
-		{
-
-		}
-
-		for(var i=0;i<busroutetobusstop.length;i++)
-		{
-			if(busroutetobusstop[i].busstop_id == this.origin)
-			{
-				myBusInfoOrigin.busroute_id.push(busroutetobusstop[i].busroute_id);
-			}
-		}
+		this.findOrigin();
+	    this.findDestination();
 		var result = [];
-		for(var i=0;i<busroutetobusstop.length;i++)
+		for(var i=0;i<this.originInfo.length;i++)
 		{
-			if(busroutetobusstop[i].busstop_id==this.destination)
+			for(var j=0;j<this.destinationInfo.length;j++)
 			{
-				myBusInfoDestination.busroute_id.push(busroutetobusstop[i].busroute_id);
-			}	
-		}
-		for(var i=0;i<myBusInfoOrigin.busroute_id.length;i++)
-		{
-			for(var j=0;j<myBusInfoDestination.busroute_id.length;j++)
-			{
-				if(myBusInfoOrigin.busroute_id[i] == myBusInfoDestination.busroute_id[j])
+				if(this.originInfo[i].busroute_id == this.destinationInfo[j].busroute_id)
 				{
-					result.push(myBusInfoDestination.busroute_id[i]);
+					result.push(this.destinationInfo[j]);
 				}
 			}
 		}
-
-		return this.findBusRouteInfo(result);
+		
+		return result;
 		 
 	}
 	this.findBusRouteInfo = function(busroute_id)
@@ -119,9 +98,8 @@ function inputs()
 	11200020
 	*/
 	var busstop = input.createBusStop();
-	var a = busstop.findRoute();
-	console.log(busstop.findOrigin());
-	console.log(a);
+	console.log(busstop.findRoute());
+//	console.log(busstop.findOrigin());
 
 }
 window.onload = inputs();
