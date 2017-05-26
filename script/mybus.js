@@ -13,6 +13,7 @@ function mybusstop()
 	this.destination;
 	this.originInfo=[];
 	this.destinationInfo = [];
+	this.myBusRoute = [];
 	this.setOrigin = function(neworigin)
 	{
 		this.origin = neworigin;
@@ -61,20 +62,19 @@ function mybusstop()
 				}
 			}
 		}
-		
-		return result;
+
+
+		return this.findBusRouteInfo(result);
 		 
 	}
-	this.findBusRouteInfo = function(busroute_id)
+	this.findBusRouteInfo = function(result)
 	{
 		var busroute_info = [];
-		for(var j=0;j<busroute_id.length;j++)
+		for(var j=0;j<result.length;j++)
 		{
 		for(var i=0;i<busroutename.length;i++)
 		{
-			
-				if(busroute_id[j]==busroutename[i].busroute_id){
-					document.getElementById("map").innerHTML += ((busroutename[i].from_nmus));
+				if(result[j].busroute_id==busroutename[i].busroute_id){
 					busroute_info.push(busroutename[i]);
 				}
 			}
@@ -108,13 +108,7 @@ function inputStack()
 	this.inputter=[];
 	this.push_back = function(newInput)
 	{
-		if(this.inputter.length<2){
 		this.inputter.push(newInput);
-		}
-		if(this.inputter.length > 3)
-		{
-			startOver();
-		}
 	};
 	this.createBusStop = function()
 	{

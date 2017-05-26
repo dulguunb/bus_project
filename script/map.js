@@ -97,15 +97,16 @@ for( var i  = 0 ;i<bus_stop_data.length;i++){
    options.setAttribute("data-bus_stop",bus_stop_data[i].busstop_id);
    document.getElementById("busStopNamesSearch").appendChild(options);
 }
-
-console.log(busroutetobusstop);
 }
 function popUpClickEvent(){
   var positionsName = [];
+  var inputs = new inputStack();
   for (var i = 0; i < document.getElementsByClassName("popUpIsClicked").length; i++) {
   document.getElementsByClassName("popUpIsClicked")[i].addEventListener("click", function() {
   positionsId.push(this.dataset.bus_stop);                   
-  positionsName.push(this.dataset.bus_stop_name);                  
+  positionsName.push(this.dataset.bus_stop_name);  
+  inputs.push_back(this.dataset.bus_stop);
+  console.log(inputs.inputter);
         if(positionsName[1]    ==   undefined){
                 document.getElementsByName("destination")[0].value = "";
                }
@@ -113,186 +114,23 @@ function popUpClickEvent(){
         if(positionsName[1] !=  undefined){
                 document.getElementsByName("destination")[0].value = positionsName[1];
             }
-        if (positionsId.length == 2 ) {
+        if (inputs.inputter.length == 2 ) {
                 
-                   findBusRoute(positionsId);        
+                  var busInfo = inputs.createBusStop();
+                  var busrouteInfo = busInfo.findRoute();
+                  console.log(positionsId);
+
+                  for(var j=0;j<busrouteInfo.length;j++)
+                  {
+                   // console.log(busrouteInfo[j]);
+                    document.getElementById("result").innerHTML += "<p>" + busrouteInfo[j].busroute_no + " " + busrouteInfo[j].from_nmus + " " + busrouteInfo[j].to_nmus + " </p> " ;
+                  }
         }
         else if ( positionsId.length > 2 ){
         positionsId.shift()
-
                 }
         }, false);
     }
-}
-function findBusRoute(positionsId)
-{
-	this.positionsId = positionsId;
-	this.busToFromStop;
-	var busStopBelongsToOrigin = new Array;
-	for(var i=0;i<busroutetobusstop.length;i++)
-	{
-		if(positionsId[0] == busroutetobusstop[i].busstop_id)
-		{
-			for(var j=0;j<busroutetobusstop.length;j++)
-			{
-				if(positionsId[1]==busroutetobusstop[j].busstop_id)
-				{
-					busStopBelongsToOrigin.push(busroutetobusstop[j]);
-				}
-			}
-
-		}
-	}
-	console.log(busStopBelongsToOrigin);
-}
-
-function sendAjax(positionsId){
- var busstopXmlHttp = new XMLHttpRequest();
- 
- var url = "bus_route_and_stop_json.php";
- var params = "busStopOrigin=" + positionsId[0] + "&busStopDestination=" + positionsId[1];
-  busstopXmlHttp.open("POST", url, true);
-  busstopXmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-  busstopXmlHttp.onreadystatechange = function() { //Call a function when the state changes.
-        if (busstopXmlHttp.readyState == 4 && busstopXmlHttp.status == 200) {      
-            var busToFromStop = [];
-            busToFromStop = JSON.parse(busstopXmlHttp.responseText);                 
-            jsonOriginToDestination(busToFromStop,positionsId);                                        
-                        }
-                    }
-  busstopXmlHttp.send(params);
-
-}
-function jsonOriginToDestination(jsonData,positionsId){    
-    
-    var list =  document.createElement("UL");
-    list.className = "list-group";
-    document.getElementById("infoBoxModal").appendChild(list);
-    var well = document.createElement("DIV");
-    var alertBoxFlag = 0;
-    well.className = "alert alert-success";
-    well.id = "infoBoxScroll";
-    list.appendChild(well);
-
-    for(var i = 0;i<jsonData.originToDestination.length;i++){
-        alertBoxFlag ++ ;
-        var fromNmusText = document.createTextNode(" "+jsonData.originToDestination[i].from_nmus+" ");
-        var toNmusText = document.createTextNode (" "+jsonData.originToDestination[i].to_nmus+" ");
-        var busrouteNo = document.createTextNode(" "+jsonData.originToDestination[i].busroute_no+" ");
-        var listElement = document.createElement("li");
-        listElement.className = "listClicked list-group-item list-group-item-info";
-        listElement.dataset.busroute_id = jsonData.originToDestination[i].busroute_id;
-        busRouteIds.push(jsonData.originToDestination[i].busroute_id);
-        listElement.appendChild(fromNmusText);
-        listElement.appendChild(toNmusText);
-        listElement.appendChild(busrouteNo);
-        listElement.dataset.target = "#"+jsonData.originToDestination[i].busroute_id;
-        listElement.dataset.toggle = "modal";
-        list.appendChild(listElement);
-    }
-if(alertBoxFlag){
-var header = document.createElement("H1");
-    well.appendChild(header.appendChild(document.createTextNode(document.getElementsByName("origin")[0].value + " буудал-аас " + document.getElementsByName("destination")[0].value + " хүртэл эдгээр чиглэлийн автобус явна " + "  (автобусны нэр дээр дарж автобусны мэдээлэлийг харна уу)")));
-
-var jsonDataForAjax = JSON.stringify(busRouteIds);
-$.ajax({
-    type: "POST",
-    url: "bus_route_traverse.php",
-    data: {data : jsonDataForAjax},
-    cache: false,
-
-    success: function(jsonData){
-        busStopTraverse(jsonData,positionsId);
-    }
-});
-well.scrollTop = well.scrollHeight;
-}else{
-    well.appendChild(document.createTextNode(document.getElementsByName("origin")[0].value + " буудал-аас " + document.getElementsByName("destination")[0].value + " хүртэл чиглэлийн автобус явахгүй" + "  (Дамжиж явах мэдээлэлийг эндээс харна уу)"));
-well.className = "alert alert-warning";
-well.scrollTop = well.scrollHeight;
-
-    }
-}
-
-function busStopTraverse(busstopInfo,positionsId){
-   
-  for(var j = 0 ; j < busstopInfo.busstop_info.length;j++){
-       var elementParagraph = document.createElement("P"); 
-       var textNode =  document.createTextNode(busstopInfo.busstop_info[j].busstop_nmmn);
-        
-        elementParagraph.appendChild(textNode);
-        var divElement = document.createElement("DIV");
-        divElement.appendChild(elementParagraph);
-        divElement.className = "busstopWrapper";
-    if(positionsId[0] == busstopInfo.busstop_info[j].busstop_id || positionsId[1] == busstopInfo.busstop_info[j].busstop_id){ 
-        var star = document.createElement("SPAN");
-        star.className = "glyphicon glyphicon-star";
-        elementParagraph.className = "alert alert-info originDestinationChosen";        
-        elementParagraph.appendChild(star);
-    }
-
-        if(document.getElementById(busstopInfo.busstop_info[j].busroute_id)){
-            var modalNode = document.getElementById(busstopInfo.busstop_info[j].busroute_id).children;
-        
-          modalBody = modalNode[0].children[0].children[0].children[0].children[0].children[0];
-    
-          modalBody.appendChild( divElement );
-
-       }
-    else{
-        var busModal  =  document.createElement("DIV");
-        
-        elementParagraph.appendChild(textNode);
-        busModal.className = "modal fade";
-        
-        busModal.id = busstopInfo.busstop_info[j].busroute_id;
-        busModal.tabIndex = "-1";
-        
-        busModal.role = "dialog";
-        document.getElementById("busStop").appendChild(busModal);
-        
-        var modalDialog =  document.createElement("DIV");
-        modalDialog.className = "modal-dialog modal-lg";
-        
-        busModal.appendChild(modalDialog);
-        var modalContent = document.createElement("DIV");
-        
-        modalContent.className = "modal-content";
-        modalDialog.appendChild(modalContent);
-        
-        var modalHeader = document.createElement("DIV");
-        modalHeader.className = "modal-header";
-        
-        modalContent.appendChild(modalHeader);
-        var wrapper = document.createElement("DIV");
-    
-
-        var modalTitle = document.createElement("h3");
-        modalTitle.className = "modal-title";
-        
-        var titleNode = document.createTextNode("Тухайн автобусны чигэлэлийн дамжиж өнгөрөх буудалууд  (Цэнхэр хүрээтэй нь сонгосон буудалдууд болно)");
-        modalTitle.appendChild(titleNode);
-        modalHeader.appendChild(wrapper);
-        wrapper.appendChild(modalTitle);
-        
-        var modalBody = document.createElement("DIV");
-        modalBody.className="modal-body";
-        
-        modalTitle.appendChild(modalBody);
-        modalBody.appendChild(divElement);
-
-
-    }
-   var closeBtn= document.createElement("BUTTON");
-   closeBtn.className = "btn btn-default";
-   closeBtn.dataset.dismiss = "modal";
-   closeBtn.appendChild(document.createTextNode("ХААХ")); 
-   modalBody.appendChild(closeBtn);
-
-  
-        }
-       
 }
 
 function getCookie(cname) {
